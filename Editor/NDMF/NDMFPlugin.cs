@@ -40,6 +40,7 @@ namespace jp.lilxyzw.ndmfmeshsimplifier.NDMF
                     }
                     Object.DestroyImmediate(component);
                 }
+                foreach (var om in ctx.AvatarRootObject.GetComponentsInChildren<NDMFMeshSimplifierOverallManager>(true)) Object.DestroyImmediate(om);
             }).PreviewingWith(new PreviewNDMFMeshSimplifier())
             ;
         }
@@ -55,6 +56,7 @@ namespace jp.lilxyzw.ndmfmeshsimplifier.NDMF
 
     internal class PreviewNDMFMeshSimplifier : IRenderFilter
     {
+        public static TogglablePreviewNode EnableNode = TogglablePreviewNode.Create(() => "lilNDMFMeshSimplifier", "lilNDMFMeshSimplifier");
         public ImmutableList<RenderGroup> GetTargetGroups(ComputeContext context)
         {
             return context.GetComponentsByType<NDMFMeshSimplifier>()
@@ -87,6 +89,9 @@ namespace jp.lilxyzw.ndmfmeshsimplifier.NDMF
             var simplifiedMesh = NDMFPlugin.Simplify(ndmfMeshSimplifier, mesh);
             return Task.FromResult<IRenderFilterNode>(new MeshSimplifierNode(simplifiedMesh));
         }
+
+        public IEnumerable<TogglablePreviewNode> GetPreviewControlNodes() { yield return EnableNode; }
+        public bool IsEnabled(ComputeContext ctx) { ctx.Observe(EnableNode.IsEnabled); return EnableNode.IsEnabled.Value; }
 
         internal class MeshSimplifierNode : IRenderFilterNode
         {
