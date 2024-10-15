@@ -40,7 +40,7 @@ namespace jp.lilxyzw.ndmfmeshsimplifier
                 {
                     if (r.GetComponent<NDMFMeshSimplifier>() == null && ((r is SkinnedMeshRenderer smr && smr.sharedMesh != null) || (r is MeshRenderer && r.GetComponent<MeshFilter>() != null && r.GetComponent<MeshFilter>().sharedMesh != null)))
                     {
-                        var meshSimplifier = r.gameObject.AddComponent<NDMFMeshSimplifier>();
+                        var meshSimplifier = Undo.AddComponent<NDMFMeshSimplifier>(r.gameObject);
                         meshSimplifier.quality = 1f;
                     }
                 }
