@@ -38,7 +38,7 @@ namespace jp.lilxyzw.ndmfmeshsimplifier
             {
                 foreach (var r in targetObj.GetComponentsInChildren<Renderer>(includeDisableRenderers))
                 {
-                    if (r.GetComponent<NDMFMeshSimplifier>() == null && (r is SkinnedMeshRenderer || (r is MeshRenderer && r.GetComponent<MeshFilter>() != null)))
+                    if (r.GetComponent<NDMFMeshSimplifier>() == null && ((r is SkinnedMeshRenderer smr && smr.sharedMesh != null) || (r is MeshRenderer && r.GetComponent<MeshFilter>() != null && r.GetComponent<MeshFilter>().sharedMesh != null)))
                     {
                         var meshSimplifier = r.gameObject.AddComponent<NDMFMeshSimplifier>();
                         meshSimplifier.quality = 1f;
@@ -137,7 +137,7 @@ namespace jp.lilxyzw.ndmfmeshsimplifier
 
         private void FindMeshSimplifiers(NDMFMeshSimplifierOverallManager targetObj)
         {
-            meshSimplifiers = targetObj.GetComponentsInChildren<NDMFMeshSimplifier>(true).Where(r => r.GetComponent<SkinnedMeshRenderer>() != null || r.GetComponent<MeshFilter>() != null).ToArray();
+            meshSimplifiers = targetObj.GetComponentsInChildren<NDMFMeshSimplifier>(true).Where(r => (r.GetComponent<SkinnedMeshRenderer>() != null && r.GetComponent<SkinnedMeshRenderer>().sharedMesh != null) || (r.GetComponent<MeshFilter>() != null && r.GetComponent<MeshFilter>().sharedMesh != null)).ToArray();
             manageStates = meshSimplifiers.ToDictionary(s => s, s => new ManageTarget(s));
             serializedMeshSimplifiers = new(meshSimplifiers);
         }
